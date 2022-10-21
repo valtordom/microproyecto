@@ -1,0 +1,31 @@
+vagrant ssh haproxy1
+vagrant@haproxy1:~$consul agent \
+ -ui -server -bootstrap-expect=1 \
+ -bind=192.168.100.7 \
+ -client=0.0.0.0 -data-dir=.
+
+
+sudo consul agent -ui -server -bootstrap-expect=1 -client=0.0.0.0 \-data-dir=\tmp\consul -node=servidor1 -bind=192.168.100.8 \-enable-script-checks=true -config-dir=/etc/consul.d
+
+
+vagrant@servidor1:~$ consul agent \
+  -node=servidor1 \
+  -bind=192.168.100.8 \
+  -enable-script-checks=true \
+  -data-dir=/tmp/consul \
+  -config-dir=/etc/consul.d
+
+vagrant@servidor2:~$ consul agent \
+  -node=servidor2 \
+  -bind=192.168.100.9 \
+  -enable-script-checks=true \
+  -data-dir=/tmp/consul \
+  -config-dir=/etc/consul.d
+
+
+
+consul join 192.168.100.9
+
+consul members
+
+consul agent -ui -server -bootstrap-expect=1 -bind=192.168.100.7 -client=0.0.0.0 -data-dir=.
